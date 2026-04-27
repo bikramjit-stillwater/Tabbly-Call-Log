@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import os
 
 app = FastAPI()
 
@@ -18,8 +19,8 @@ def get_call_logs():
     url = "https://www.tabbly.io/dashboard/agents/endpoints/call-logs-v2"
 
     params = {
-        "api_key": "25877eee91ff232b",   # 🔴 replace
-        "organization_id": "2853",  # 🔴 replace
+        "api_key": os.getenv("API_KEY"),        # ✅ from Render
+        "organization_id": os.getenv("ORG_ID"), # ✅ from Render
         "limit": 50,
         "offset": 0
     }
