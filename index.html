@@ -1,20 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Call Logs</title>
+    <title>Call Logs Dashboard</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        button { padding: 10px 20px; margin-bottom: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background-color: #f2f2f2; }
+        body {
+            font-family: Arial;
+            padding: 30px;
+            background: #f5f6fa;
+        }
+
+        h2 {
+            color: #2f3640;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #273c75;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: #192a56;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #40739e;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .answered {
+            color: green;
+            font-weight: bold;
+        }
+
+        .not-answered {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-<h2>📞 Call Logs</h2>
+<h2>📞 Call Logs Dashboard</h2>
 
-<button onclick="getCallLogs()">Get Call Logs</button>
+<button onclick="getCallLogs()">Load Call Logs</button>
 
 <table id="table">
     <thead>
@@ -31,38 +80,34 @@
 <script>
 async function getCallLogs() {
     try {
-        // ✅ USE YOUR LIVE BACKEND (VERY IMPORTANT)
-        const res = await fetch("https://tabbly-call-log.onrender.com/call-logs");
+        const res = await fetch("/call-logs"); // ✅ same server
         const response = await res.json();
-
-        console.log("API RESPONSE:", response);
 
         let calls = response.data || [];
 
         const tbody = document.querySelector("#table tbody");
         tbody.innerHTML = "";
 
-        if (calls.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='4'>No logs found</td></tr>";
-            return;
-        }
-
         calls.forEach(call => {
             const row = document.createElement("tr");
 
+            const statusClass = call.call_status === "Call Answered"
+                ? "answered"
+                : "not-answered";
+
             row.innerHTML = `
                 <td>${call.called_to || "N/A"}</td>
-                <td>${call.call_status || "N/A"}</td>
-                <td>${call.call_duration || 0}s</td>
-                <td>${call.called_time || "N/A"}</td>
+                <td class="${statusClass}">${call.call_status}</td>
+                <td>${call.call_duration}s</td>
+                <td>${call.called_time}</td>
             `;
 
             tbody.appendChild(row);
         });
 
     } catch (error) {
-        console.error("ERROR:", error);
-        alert("Error fetching logs");
+        console.error(error);
+        alert("Error fetching data");
     }
 }
 </script>
