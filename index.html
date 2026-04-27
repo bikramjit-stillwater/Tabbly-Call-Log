@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<h2>Call Logs</h2>
+<h2>📞 Call Logs</h2>
 
 <button onclick="getCallLogs()">Get Call Logs</button>
 
@@ -31,7 +31,8 @@
 <script>
 async function getCallLogs() {
     try {
-        const res = await fetch("http://127.0.0.1:8000/call-logs");
+        // ✅ USE YOUR LIVE BACKEND (VERY IMPORTANT)
+        const res = await fetch("https://tabbly-call-log.onrender.com/call-logs");
         const response = await res.json();
 
         console.log("API RESPONSE:", response);
