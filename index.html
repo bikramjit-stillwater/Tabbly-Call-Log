@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Call Logs</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<h2>Call Logs</h2>
+
+<button onclick="getCallLogs()">Get Call Logs</button>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Status</th>
+            <th>Duration</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+async function getCallLogs() {
+    try {
+        const res = await fetch("http://127.0.0.1:8000/call-logs");
+        const response = await res.json();
+
+        console.log("API RESPONSE:", response);
+
+        let calls = response.data || [];
+
+        const tbody = document.querySelector("#table tbody");
+        tbody.innerHTML = "";
+
+        if (calls.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='4'>No logs found</td></tr>";
+            return;
+        }
+
+        calls.forEach(call => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${call.called_to || "N/A"}</td>
+                <td>${call.call_status || "N/A"}</td>
+                <td>${call.call_duration || 0}s</td>
+                <td>${call.called_time || "N/A"}</td>
+            `;
+
+            tbody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("ERROR:", error);
+        alert("Error fetching logs");
+    }
+}
+</script>
+
+</body>
+</html>
